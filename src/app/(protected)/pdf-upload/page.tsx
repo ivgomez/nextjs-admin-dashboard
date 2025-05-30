@@ -1,6 +1,23 @@
+"use client";
+
 import { DocumentIcon } from "@heroicons/react/24/outline";
+import { DropZone } from "@/components/molecules/DropZone";
+import { useState } from "react";
 
 export default function PDFUploadPage() {
+  const [error, setError] = useState("");
+
+  const handleFileSelect = (file: File) => {
+    if (file.size > 10 * 1024 * 1024) {
+      // 10MB
+      setError("File size must be less than 10MB");
+    } else {
+      setError("");
+      // Aquí puedes manejar la subida del archivo
+      console.log("File selected:", file.name);
+    }
+  };
+
   return (
     <div className='space-y-6'>
       <div className='flex items-center space-x-3'>
@@ -10,22 +27,7 @@ export default function PDFUploadPage() {
 
       <div className='rounded-lg bg-white shadow'>
         <div className='p-6'>
-          <div className='mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg'>
-            <div className='space-y-1 text-center'>
-              <DocumentIcon className='mx-auto h-12 w-12 text-gray-400' />
-              <div className='flex text-sm text-gray-600'>
-                <label
-                  htmlFor='file-upload'
-                  className='relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500'
-                >
-                  <span>Upload a file</span>
-                  <input id='file-upload' name='file-upload' type='file' className='sr-only' accept='.pdf' />
-                </label>
-                <p className='pl-1'>or drag and drop</p>
-              </div>
-              <p className='text-xs text-gray-500'>PDF up to 10MB</p>
-            </div>
-          </div>
+          <DropZone onFileSelect={handleFileSelect} accept='.pdf' maxSize={10} error={error} />
         </div>
       </div>
 
