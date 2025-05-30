@@ -3,6 +3,7 @@
 import { DocumentTextIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
+import { Select } from "@/components/atoms/Select";
 import { useState } from "react";
 
 // Mock data - replace with API call later
@@ -125,36 +126,28 @@ export default function ContentPage() {
             <form onSubmit={handleSaveEdit} className='space-y-4'>
               <Input id='title' name='title' type='text' label='Title' defaultValue={editingItem.title} required />
 
-              <div>
-                <label htmlFor='type' className='block text-sm font-medium leading-6 text-gray-900'>
-                  Type
-                </label>
-                <select
-                  id='type'
-                  name='type'
-                  defaultValue={editingItem.type}
-                  className='mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                >
-                  <option value='Text'>Text</option>
-                  <option value='Announcement'>Announcement</option>
-                  <option value='Document'>Document</option>
-                </select>
-              </div>
+              <Select
+                id='type'
+                name='type'
+                label='Type'
+                defaultValue={editingItem.type}
+                options={[
+                  { value: "Text", label: "Text" },
+                  { value: "Announcement", label: "Announcement" },
+                  { value: "Document", label: "Document" },
+                ]}
+              />
 
-              <div>
-                <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
-                  Status
-                </label>
-                <select
-                  id='status'
-                  name='status'
-                  defaultValue={editingItem.status}
-                  className='mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6'
-                >
-                  <option value='Published'>Published</option>
-                  <option value='Draft'>Draft</option>
-                </select>
-              </div>
+              <Select
+                id='status'
+                name='status'
+                label='Status'
+                defaultValue={editingItem.status}
+                options={[
+                  { value: "Published", label: "Published" },
+                  { value: "Draft", label: "Draft" },
+                ]}
+              />
 
               <div className='flex justify-end space-x-3'>
                 <Button variant='secondary' onClick={handleCancelEdit} type='button'>
