@@ -2,14 +2,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const isAuthenticated = request.cookies.has("auth-token"); // Replace with your actual auth check
+  const session = request.cookies.get("session");
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
 
-  if (!isAuthenticated && !isAuthPage) {
+  // Redirect to login if accessing protected route without session
+  if (!session && !isAuthPage) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  if (isAuthenticated && isAuthPage) {
+  // Redirect to dashboard if accessing auth pages with session
+  if (session && isAuthPage) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

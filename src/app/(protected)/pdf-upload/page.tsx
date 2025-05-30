@@ -2,6 +2,7 @@
 
 import { DocumentIcon } from "@heroicons/react/24/outline";
 import { DropZone } from "@/components/molecules/DropZone";
+import { Button } from "@/components/atoms/Button";
 import { useState } from "react";
 
 export default function PDFUploadPage() {
@@ -13,7 +14,7 @@ export default function PDFUploadPage() {
       setError("File size must be less than 10MB");
     } else {
       setError("");
-      // Aquí puedes manejar la subida del archivo
+      // Handle file upload here
       console.log("File selected:", file.name);
     }
   };
@@ -46,12 +47,9 @@ export default function PDFUploadPage() {
                     <p className='truncate text-sm text-gray-500'>Uploaded 2 hours ago</p>
                   </div>
                   <div>
-                    <button
-                      type='button'
-                      className='inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-                    >
+                    <Button variant='secondary' size='sm'>
                       Download
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </li>

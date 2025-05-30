@@ -1,42 +1,39 @@
 import { NextResponse } from "next/server";
-import { TEST_USERS } from "@/config/auth";
+
+// Mock user data - replace with database query later
+const users = [
+  {
+    id: 1,
+    email: "admin@example.com",
+    password: "admin123", // In production, use hashed passwords
+    role: "admin",
+  },
+];
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { email, password } = body;
+    const { email, password } = await request.json();
 
-    const user = TEST_USERS.find((u) => u.email === email && u.password === password);
+    // Find user
+    const user = users.find((u) => u.email === email && u.password === password);
 
     if (!user) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    // Create a simple session token
-    const token = Buffer.from(JSON.stringify({ id: user.id, email: user.email })).toString("base64");
+    const response = NextResponse.json({ success: true });
 
-    const response = NextResponse.json(
-      {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        },
-      },
-      { status: 200 }
-    );
-
-    // Set the auth cookie
-    response.cookies.set("auth-token", token, {
+    // Set session cookie
+    response.cookies.set("session", JSON.stringify({ userId: user.id, role: user.role }), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24, // 24 hours
+      maxAge: 60 * 60 * 24 * 7, // 1 week
     });
 
     return response;
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    console.error("Login error:", error);
+    return NextResponse.json({ error: "Failed to login" }, { status: 500 });
   }
 }

@@ -9,6 +9,7 @@ import {
   DocumentIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
+import { Button } from "@/components/atoms/Button";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
@@ -25,14 +26,19 @@ export default function Sidebar() {
     try {
       const response = await fetch("/api/auth/logout", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      if (response.ok) {
-        router.push("/auth/login");
-        router.refresh();
+      if (!response.ok) {
+        throw new Error("Failed to logout");
       }
+
+      router.push("/auth/login");
+      router.refresh();
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -64,16 +70,14 @@ export default function Sidebar() {
         })}
       </nav>
       <div className='border-t border-gray-700 p-4'>
-        <button
+        <Button
+          variant='ghost'
+          fullWidth
+          leftIcon={<ArrowRightOnRectangleIcon className='h-6 w-6' />}
           onClick={handleLogout}
-          className='group flex w-full items-center rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white'
         >
-          <ArrowRightOnRectangleIcon
-            className='mr-3 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-white'
-            aria-hidden='true'
-          />
-          Cerrar sesión
-        </button>
+          Sign out
+        </Button>
       </div>
     </div>
   );

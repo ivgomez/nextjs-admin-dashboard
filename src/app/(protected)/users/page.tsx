@@ -4,6 +4,7 @@ import { UserGroupIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { SearchBar } from "@/components/molecules/SearchBar";
 import { UserForm, UserFormData } from "@/components/organisms/UserForm";
+import { Button } from "@/components/atoms/Button";
 
 // Mock data - replace with API call later
 const users = [
@@ -59,13 +60,9 @@ export default function UsersPage() {
           <UserGroupIcon className='h-6 w-6 text-gray-400' />
           <h1 className='text-2xl font-semibold text-gray-900'>Users</h1>
         </div>
-        <button
-          type='button'
-          onClick={() => setShowForm(!showForm)}
-          className='rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-        >
+        <Button variant='primary' onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancel" : "Add User"}
-        </button>
+        </Button>
       </div>
 
       {showForm && (
@@ -81,7 +78,7 @@ export default function UsersPage() {
         <div className='p-6'>
           <div className='sm:flex sm:items-center'>
             <div className='sm:flex-auto'>
-              <h2 className='text-base font-semibold leading-6 text-gray-900'>Users List</h2>
+              <h2 className='text-base font-semibold leading-6 text-gray-900'>Users</h2>
               <p className='mt-2 text-sm text-gray-700'>A list of all users in your application.</p>
             </div>
           </div>
@@ -126,13 +123,19 @@ export default function UsersPage() {
                         <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{user.email}</td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{user.role}</td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                          <span className='inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800'>
+                          <span
+                            className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                              user.status === "Active" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
                             {user.status}
                           </span>
                         </td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{user.lastLogin}</td>
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                          <button
+                          <Button
+                            variant='secondary'
+                            size='sm'
                             onClick={() => {
                               setSelectedUser({
                                 name: user.name,
@@ -141,11 +144,20 @@ export default function UsersPage() {
                               });
                               setShowForm(true);
                             }}
-                            className='text-indigo-600 hover:text-indigo-900 mr-4'
                           >
                             Edit
-                          </button>
-                          <button className='text-red-600 hover:text-red-900'>Delete</button>
+                          </Button>
+                          <Button
+                            variant='danger'
+                            size='sm'
+                            className='ml-4'
+                            onClick={() => {
+                              // Handle delete
+                              console.log("Delete user:", user.id);
+                            }}
+                          >
+                            Delete
+                          </Button>
                         </td>
                       </tr>
                     ))}
