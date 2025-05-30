@@ -4,10 +4,12 @@ import { DocumentTextIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Input";
 import { Select } from "@/components/atoms/Select";
+import { Table } from "@/components/molecules/Table";
 import { useState } from "react";
+import { ContentItem, createContentColumns } from "./config/columns";
 
 // Mock data - replace with API call later
-const contentItems = [
+const contentItems: ContentItem[] = [
   {
     id: 1,
     title: "Welcome Message",
@@ -34,7 +36,7 @@ const contentItems = [
 export default function ContentPage() {
   const [items, setItems] = useState(contentItems);
   const [loading, setLoading] = useState(false);
-  const [editingItem, setEditingItem] = useState<(typeof contentItems)[0] | null>(null);
+  const [editingItem, setEditingItem] = useState<ContentItem | null>(null);
 
   const handleAddContent = () => {
     // TODO: Implement add content functionality
@@ -98,7 +100,6 @@ export default function ContentPage() {
         throw new Error("Failed to delete content");
       }
 
-      // Remove the item from the list
       setItems(items.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Delete error:", error);
@@ -106,6 +107,8 @@ export default function ContentPage() {
       setLoading(false);
     }
   };
+
+  const columns = createContentColumns(handleEdit, handleDelete, loading);
 
   return (
     <div className='space-y-6'>
@@ -169,72 +172,7 @@ export default function ContentPage() {
                 <p className='mt-2 text-sm text-gray-700'>A list of all content items in your application.</p>
               </div>
             </div>
-            <div className='mt-8 flow-root'>
-              <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                  <table className='min-w-full divide-y divide-gray-300'>
-                    <thead>
-                      <tr>
-                        <th
-                          scope='col'
-                          className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0'
-                        >
-                          Title
-                        </th>
-                        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                          Type
-                        </th>
-                        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                          Status
-                        </th>
-                        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'>
-                          Last Updated
-                        </th>
-                        <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-0'>
-                          <span className='sr-only'>Actions</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {items.map((item) => (
-                        <tr key={item.id}>
-                          <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0'>
-                            {item.title}
-                          </td>
-                          <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{item.type}</td>
-                          <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                            <span
-                              className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                                item.status === "Published"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              }`}
-                            >
-                              {item.status}
-                            </span>
-                          </td>
-                          <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>{item.lastUpdated}</td>
-                          <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                            <Button variant='secondary' size='sm' onClick={() => handleEdit(item.id)}>
-                              Edit
-                            </Button>
-                            <Button
-                              variant='danger'
-                              size='sm'
-                              className='ml-4'
-                              onClick={() => handleDelete(item.id)}
-                              disabled={loading}
-                            >
-                              Delete
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <Table columns={columns} data={items} />
           </div>
         </div>
       )}
